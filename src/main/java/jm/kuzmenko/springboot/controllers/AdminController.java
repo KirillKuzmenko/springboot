@@ -3,6 +3,8 @@ package jm.kuzmenko.springboot.controllers;
 import jm.kuzmenko.springboot.models.User;
 import jm.kuzmenko.springboot.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -22,13 +24,17 @@ public class AdminController {
 
     @RequestMapping(value = {"/users"}, method = RequestMethod.GET)
     public String listUsers(Model model) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        User user = userService.findUserBuyUsername(login);
+        model.addAttribute("login", user);
         model.addAttribute("user", new User());
         model.addAttribute("listUsers", this.userService.listUser());
-        return "admin_page";
+        return "admin";
     }
 
     @RequestMapping(value = "/users/add", method = RequestMethod.POST)
-    public String addUser(@ModelAttribute("user") User user) {
+    public String addOrUpdateUser(@ModelAttribute("user") User user) {
         if (user.getId() == null) {
             this.userService.addUser(user);
         } else {
@@ -41,11 +47,5 @@ public class AdminController {
     public String removeUser(@PathVariable("id") Long id) {
         this.userService.removeUser(id);
         return "redirect:/admin/users";
-    }
-
-    @RequestMapping("/edit/{id}")
-    public String editUser(@PathVariable("id") Long id, Model model) {
-        model.addAttribute("user", this.userService.getUserById(id));
-        return "edit";
     }
 }

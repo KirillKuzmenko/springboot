@@ -22,7 +22,7 @@ public class UserController {
 
     @RequestMapping("/")
     public String getHomePage() {
-        return "index";
+        return "redirect:/login";
     }
 
     @RequestMapping(value = "/user", method = RequestMethod.GET)
