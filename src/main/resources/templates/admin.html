@@ -9,15 +9,18 @@
 
 <body class="container-fluid text-dark bg-light">
     <!--Head site-->
-    <div class="row bg-dark text-white p-2">
-        <div class="col text-left px-3 py-2">
-            <span th:text="${login.getUsername()}" class="font-weight-bold m-0 p-0">username</span> with roles:
-            <span th:each="role : ${#authentication.getAuthorities()}" th:text="${role.getAuthority().replaceFirst('ROLE_', '')}"></span>
-        </div>
-        <div class="col text-right">
-            <a class="nav-link text-light" href="/logout">Logout</a>
-        </div>
-    </div>
+    <header>
+        <nav class="navbar navbar-dark bg-dark">
+            <div class="navbar-brand">
+                <b><span th:text="${login.getUsername()}"></span> </b>
+                <span>with roles: </span>
+                <span th:each="role : ${#authentication.getAuthorities()}" th:text="${role.getAuthority().replaceFirst('ROLE_', '')} + ' '"></span>
+            </div>
+            <div class="navbar-nav" sec:authorize="isAuthenticated()">
+                <a class="nav-item nav-link" href="/logout">Logout</a>
+            </div>
+        </nav>
+    </header>
 
     <div class="container-fluid flex">
         <div class="row min-vh-100 no-gutters">
